@@ -1,0 +1,115 @@
+class Student:
+    def __init__(self, name, roll_number):
+        self.name = name
+        self.roll_number = roll_number
+        self.grades = {}  # Stores subject: grade pairs
+
+    def add_grade(self, subject, grade):
+        if 0 <= grade <= 100:
+            self.grades[subject] = grade
+        else:
+            print("Invalid grade! Must be between 0 and 100.")
+
+    def calculate_average(self):
+        if not self.grades:
+            return 0
+        return sum(self.grades.values()) / len(self.grades)
+
+    def display_student_info(self):
+        print(f"\nStudent Name: {self.name}")
+        print(f"Roll Number: {self.roll_number}")
+        if self.grades:
+            print("Grades:")
+            for subject, grade in self.grades.items():
+                print(f"  {subject}: {grade}")
+            print(f"Average Grade: {self.calculate_average():.2f}")
+        else:
+            print("No grades assigned yet.")
+
+
+class StudentTracker:
+    def __init__(self):
+        self.students = []
+
+    def add_student(self, name, roll_number):
+        if self.find_student(roll_number):
+            print("Roll number already exists. Please enter a unique roll number.")
+        else:
+            self.students.append(Student(name, roll_number))
+            print(f"Student {name} added successfully.")
+
+    def add_grades(self, roll_number, subject, grade):
+        student = self.find_student(roll_number)
+        if student:
+            student.add_grade(subject, grade)
+            print(f"Grade added for {subject}.")
+        else:
+            print("Student not found.")
+
+    def view_student_details(self, roll_number):
+        student = self.find_student(roll_number)
+        if student:
+            student.display_student_info()
+        else:
+            print("Student not found.")
+
+    def calculate_average(self, roll_number):
+        student = self.find_student(roll_number)
+        if student:
+            average = student.calculate_average()
+            print(f"Average grade for {student.name}: {average:.2f}")
+        else:
+            print("Student not found.")
+
+    def find_student(self, roll_number):
+        for student in self.students:
+            if student.roll_number == roll_number:
+                return student
+        return None
+
+
+def main_menu():
+    tracker = StudentTracker()
+
+    while True:
+        print("\n--- Student Performance Tracker ---")
+        print("1. Add Student")
+        print("2. Add Grades")
+        print("3. View Student Details")
+        print("4. Calculate Average Grade")
+        print("5. Exit")
+
+        choice = input("Choose an option: ")
+
+        if choice == '1':
+            name = input("Enter student name: ")
+            roll_number = input("Enter roll number: ")
+            tracker.add_student(name, roll_number)
+
+        elif choice == '2':
+            roll_number = input("Enter roll number: ")
+            subject = input("Enter subject: ")
+            try:
+                grade = float(input("Enter grade (0-100): "))
+                tracker.add_grades(roll_number, subject, grade)
+            except ValueError:
+                print("Please enter a valid number for grade.")
+
+        elif choice == '3':
+            roll_number = input("Enter roll number: ")
+            tracker.view_student_details(roll_number)
+
+        elif choice == '4':
+            roll_number = input("Enter roll number: ")
+            tracker.calculate_average(roll_number)
+
+        elif choice == '5':
+            print("Exiting the application. Goodbye!")
+            break
+
+        else:
+            print("Invalid option. Please try again.")
+
+
+if __name__ == "__main__":
+    main_menu()
